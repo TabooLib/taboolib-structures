@@ -44,12 +44,39 @@ object TabooLib {
             dependency("common-core")
         }
         add("common-util") {
-            dependency("common-plugin") // optional
-            dependency("common-adapter") // optional
             dependency("common-environment")
-            dependency("com.google.guava:guava:21.0").library()
-            dependency("com.google.code.gson:gson:2.8.9").library()
-            dependency("org.apache.commons:commons-lang3:3.5").library()
+            dependency("common-plugin").optional()
+            dependency("common-adapter").optional()
+            library("com.google.guava:guava:21.0")
+            library("com.google.code.gson:gson:2.8.9")
+            library("org.apache.commons:commons-lang3:3.5")
+        }
+        add("module-chat") {
+            dependency("common-environment")
+            dependency("common-adapter")
+            library("net.md-5:bungeecord-chat:1.17")
+        }
+        add("module-configuration-annotation") {
+            dependency("common-plugin")
+            dependency("common-util")
+            dependency("module-configuration-core")
+        }
+        add("module-configuration-core") {
+            dependency("common-environment")
+            dependency("common-util")
+            dependency("common-adapter").optional()
+            dependency("module-chat").optional()
+            library("org.yaml:snakeyaml:1.28")
+            library("com.typesafe:config:1.4.1")
+            library("com.electronwill.night-config:core:3.6.5")
+            library("com.electronwill.night-config:toml:3.6.5")
+            library("com.electronwill.night-config:json:3.6.5")
+            library("com.electronwill.night-config:hocon:3.6.5")
+        }
+        add("module-configuration-data") {
+            dependency("common-plugin")
+            dependency("common-scheduler")
+            dependency("module-configuration-core")
         }
     }
 }
@@ -80,6 +107,10 @@ class Group(init: Group.() -> Unit) {
             return this
         }
 
+        fun library(name: String): Dependency {
+            return Dependency(name).library().apply { dependencies.add(this) }
+        }
+
         fun dependency(name: String): Dependency {
             return Dependency(name).apply { dependencies.add(this) }
         }
@@ -96,9 +127,15 @@ class Group(init: Group.() -> Unit) {
 class Dependency(val name: String) {
 
     var isLibrary = false
+    var isOptional = false
 
     fun library(): Dependency {
         isLibrary = true
+        return this
+    }
+
+    fun optional(): Dependency {
+        isOptional = true
         return this
     }
 }

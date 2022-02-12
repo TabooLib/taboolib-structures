@@ -9,8 +9,6 @@ subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.tabooproject.shrinkingkt")
-    apply(plugin = "com.github.johnrengelman.shadow")
 
     repositories {
         maven("https://repo.tabooproject.org/repository/releases/")
